@@ -4,6 +4,7 @@ const cors= require("cors");
 const {userRouter}  = require("./routes/user.routes");
 const {postRouter} = require("./routes/post.routes");
 const {authentication} = require("./middleware/authentication")
+const {commentRouter} = require('./routes/comment.routes')
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use("/user", userRouter);
 app.use(authentication);
 app.use("/posts", postRouter);
+app.use("/comment", commentRouter);
 app.listen(PORT, async()=>{
     try{
         await connection;

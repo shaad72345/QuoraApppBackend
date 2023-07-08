@@ -8,7 +8,7 @@ const userRouter= Router();
 
 
 userRouter.post("/signup", async(req,res)=>{
-    const {name,username,password} = req.body;
+    const {name,email,password} = req.body;
     console.log(req.body);
     bcrypt.hash(password,5,async function(err, hash){
         if(err){
@@ -17,14 +17,14 @@ userRouter.post("/signup", async(req,res)=>{
         }
         const user = new UserModel({
             name,
-            username,
+            email,
             password:hash
         })
         try {
              await user.save();
              res.json({message:"Signup successful"});
         } catch (error) {
-               res.json({Error:'Signup failed'});
+               res.json({Error:'Signup failed',msg:error.message});
         }
        
         // res.send("signup succesful");
@@ -35,8 +35,8 @@ userRouter.post("/signup", async(req,res)=>{
 })
 
 userRouter.post("/login", async(req,res)=>{
-      const {username, password} = req.body;
-      const user = await UserModel.findOne({username});
+      const {email, password} = req.body;
+      const user = await UserModel.findOne({email});
        if(user){
      const hash = user.password;
       bcrypt.compare(password,hash, function(err, result){
@@ -46,15 +46,15 @@ userRouter.post("/login", async(req,res)=>{
                       ////////process.env.JWT_SECRET
         if(result){
             const token = jwt.sign({userId : user._id}, process.env.JWT_SECRET);
-            res.json({message : "Login successful", Name:user.name,token});
+            res.json({message : "Login successful", name:user.name,token});
         }
         else{
-            res.json({msg:"Wrong Credential"});
+            res.json({message:"Wrong Credential"});
         }
       })
     }
     else{
-        res.json({msg:"Invalid Credentails"})
+        res.json({message:"Invalid Credentails"})
     }
 
 //    res.send(user);

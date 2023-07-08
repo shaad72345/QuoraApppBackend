@@ -1,4 +1,4 @@
-const {Router} = require("express")
+const {Router, text} = require("express")
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -13,12 +13,14 @@ const postRouter = Router();
 // next();
 // })
 postRouter.get("/",  async(req,res)=>{
-    const notes = await PostModel.find().sort({createdAt:-1});
-    console.log(notes)
+    const {limit = 5} = req.query;
+    const notes = await PostModel.find().sort({createdAt:-1}).populate(["userId"]).limit(limit);;
+    // console.log(notes)
+    
     res.send(notes);
 })
 postRouter.get("/my",  async(req,res)=>{
-    const notes = await PostModel.find({userId:req.body.userId}).sort({createdAt:-1});
+    const notes = await PostModel.find({userId:req.body.userId}).sort({createdAt:-1}).populate(["userId"]);
     res.send(notes);
 })
 
@@ -29,13 +31,13 @@ postRouter.post("/create",  async(req,res)=>{
         Post_Image,
         description,
         userId
-    });
+    })
 
     try {
         await note.save();
-        res.json({msg:"Your post has Uploaded Succesfully..."});
+        res.send({message:"Your post has Uploaded Succesfully..."});
     } catch (error) {
-        res.send("Something went wrong");
+        res.send({messag:"Something went wrong"});
     }
 
 })
@@ -74,3 +76,5 @@ else{
 module.exports = {
     postRouter
 }
+
+

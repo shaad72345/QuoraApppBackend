@@ -24,7 +24,7 @@ userRouter.post("/signup", async(req,res)=>{
              await user.save();
              res.json({message:"Signup successful"});
         } catch (error) {
-               res.json({Error:'Signup failed',message:error.message});
+               res.json({msg:'Signup failed',error:error.message});
         }
        
         // res.send("signup succesful");

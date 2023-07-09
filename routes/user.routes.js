@@ -45,7 +45,7 @@ userRouter.post("/login", async(req,res)=>{
         }
                       ////////process.env.JWT_SECRET
         if(result){
-            const token = jwt.sign({userId : user._id}, process.env.JWT_SECRET);
+            const token = jwt.sign({userId : user._id, Name:user.name}, process.env.JWT_SECRET);
             res.json({message : "Login successful", name:user.name,token});
         }
         else{
